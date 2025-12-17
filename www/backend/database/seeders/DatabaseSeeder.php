@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Asset;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +17,47 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create test users
+        $users = [
+            [
+                'name' => 'Alice Trader',
+                'email' => 'alice@example.com',
+                'password' => Hash::make('password'),
+                'balance' => 10000.00,
+                'assets' => [
+                    ['symbol' => 'BTC', 'amount' => 0.5, 'locked_amount' => 0],
+                    ['symbol' => 'ETH', 'amount' => 2.0, 'locked_amount' => 0],
+                ],
+            ],
+            [
+                'name' => 'Bob Investor',
+                'email' => 'bob@example.com',
+                'password' => Hash::make('password'),
+                'balance' => 5000.00,
+                'assets' => [
+                    ['symbol' => 'BTC', 'amount' => 0.2, 'locked_amount' => 0],
+                ],
+            ],
+            [
+                'name' => 'Charlie Speculator',
+                'email' => 'charlie@example.com',
+                'password' => Hash::make('password'),
+                'balance' => 20000.00,
+                'assets' => [
+                    ['symbol' => 'ETH', 'amount' => 5.0, 'locked_amount' => 0],
+                ],
+            ],
+        ];
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        foreach ($users as $userData) {
+            $assets = $userData['assets'];
+            unset($userData['assets']);
+
+            $user = User::create($userData);
+
+            foreach ($assets as $assetData) {
+                $user->assets()->create($assetData);
+            }
+        }
     }
 }

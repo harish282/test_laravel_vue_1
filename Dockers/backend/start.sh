@@ -7,8 +7,12 @@ chmod -R 755 /var/www/html/storage
 # Install dependencies
 composer update --no-dev --optimize-autoloader
 
-# Generate key
-php artisan key:generate
+# Check for .env file
+if [ ! -f .env ]; then
+    cp .env.example .env
+    # Generate key
+    php artisan key:generate
+fi
 
 # Start Reverb in background
 php artisan reverb:start &
