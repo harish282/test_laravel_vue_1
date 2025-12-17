@@ -1,4 +1,4 @@
-FROM php:8.2-cli
+FROM php:8.4-cli
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -29,4 +29,4 @@ WORKDIR /var/www/html
 EXPOSE 8000
 
 # Run Laravel
-CMD chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html/storage && composer install --no-dev --optimize-autoloader && php artisan key:generate && php artisan serve --host=0.0.0.0 --port=8000
+CMD chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html/storage && composer update --no-dev --optimize-autoloader && php artisan key:generate && php artisan serve --host=0.0.0.0 --port=8000
