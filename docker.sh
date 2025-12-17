@@ -7,10 +7,9 @@ COMPOSE_FILE="docker-compose.yml"
 case "$1" in
     start)
         echo "Creating folders..."
-        mkdir -p ./www/backend
-        mkdir -p ./www/frontend
+        mkdir -p ./www/backend/storage ./www/backend/bootstrap/cache
         echo "Setting up and starting Docker containers..."
-        docker-compose -f $COMPOSE_FILE up -d --build
+        docker-compose -f $COMPOSE_FILE down && docker-compose -f $COMPOSE_FILE up -d --build
         echo "Containers started. Backend at http://localhost:8000, Frontend at http://localhost:8080"
         ;;
     stop)

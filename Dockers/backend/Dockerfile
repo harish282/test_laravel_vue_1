@@ -28,5 +28,9 @@ WORKDIR /var/www/html
 # Expose port
 EXPOSE 8000
 
-# Run Laravel
-CMD chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html/storage && composer update --no-dev --optimize-autoloader && php artisan key:generate && php artisan serve --host=0.0.0.0 --port=8000
+# Copy start script
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# Run Laravel and Reverb
+CMD /usr/local/bin/start.sh
