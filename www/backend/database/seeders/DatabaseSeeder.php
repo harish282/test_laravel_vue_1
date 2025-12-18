@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'balance' => 10000.00,
                 'assets' => [
-                    ['symbol' => 'BTC', 'amount' => 0.5, 'locked_amount' => 0],
+                    ['symbol' => 'BTC', 'amount' => 5, 'locked_amount' => 0],
                     ['symbol' => 'ETH', 'amount' => 2.0, 'locked_amount' => 0],
                 ],
             ],
@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'balance' => 5000.00,
                 'assets' => [
-                    ['symbol' => 'BTC', 'amount' => 0.2, 'locked_amount' => 0],
+                    ['symbol' => 'BTC', 'amount' => 2, 'locked_amount' => 0],
                 ],
             ],
             [
