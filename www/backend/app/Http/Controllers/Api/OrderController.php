@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Events\OrderUpdated;
+use App\Events\OrderMatched;
 use App\Http\Controllers\Controller;
 use App\Models\Asset;
 use App\Models\Order;
@@ -166,13 +167,16 @@ class OrderController extends Controller
         $matchAmount = $order->amount;
 
         // Create trade
-        Trade::create([
+        $trade = Trade::create([
             'buyer_id' => $order->side === 'buy' ? $order->user_id : $counterOrder->user_id,
             'seller_id' => $order->side === 'sell' ? $order->user_id : $counterOrder->user_id,
             'symbol' => $order->symbol,
             'price' => $counterOrder->price,
             'amount' => $matchAmount,
         ]);
+
+        // Broadcast match
+        broadcast(new OrderMatched($trade));
 
         // Update balances
         $buyerId = $order->side === 'buy' ? $order->user_id : $counterOrder->user_id;
@@ -200,9 +204,5 @@ class OrderController extends Controller
         // Mark orders as filled
         $order->update(['status' => 2, 'amount' => 0]);
         $counterOrder->update(['status' => 2, 'amount' => 0]);
-
-        // Broadcast matched
-        broadcast(new OrderUpdated($order, 'matched'));
-        broadcast(new OrderUpdated($counterOrder, 'matched'));
     }
 }

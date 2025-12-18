@@ -61,7 +61,7 @@
             <td>{{ order.side }}</td>
             <td>{{ order.price }}</td>
             <td>{{ order.amount }}</td>
-            <td>{{ order.status }}</td>
+            <td>{{ getStatusString(order.status) }}</td>
             <td>
               <button
                 v-if="order.status === 1"
@@ -90,6 +90,19 @@ const buyOrders = computed(() => orders.value.filter((o) => o.side === "buy"));
 const sellOrders = computed(() =>
   orders.value.filter((o) => o.side === "sell")
 );
+
+const getStatusString = (status) => {
+  switch (status) {
+    case 1:
+      return "Open";
+    case 2:
+      return "Filled";
+    case 3:
+      return "Cancelled";
+    default:
+      return "Unknown";
+  }
+};
 
 const loadProfile = async () => {
   const token = localStorage.getItem("token");

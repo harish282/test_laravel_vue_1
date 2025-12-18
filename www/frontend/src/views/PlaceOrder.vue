@@ -73,7 +73,8 @@ const placeOrder = async () => {
       // Reset form
       price.value = "";
       amount.value = "";
-      alert("Order placed successfully");
+      // Redirect to orders page
+      router.push("/orders");
     } else {
       alert("Failed to place order");
     }
