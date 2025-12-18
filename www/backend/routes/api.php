@@ -3,10 +3,12 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\OrderController;
 
 Route::post('/login', function (Request $request) {
+    Log::info('Login attempt', $request->all());
     $request->validate([
         'email' => 'required|email',
         'password' => 'required',
@@ -14,10 +16,12 @@ Route::post('/login', function (Request $request) {
 
     if (Auth::attempt($request->only('email', 'password'))) {
         $user = Auth::user();
+        Log::info('Login successful for user', ['id' => $user->id, 'email' => $user->email]);
         $token = $user->createToken('api')->plainTextToken;
         return response()->json(['token' => $token]);
     }
 
+    Log::info('Login failed for email', ['email' => $request->email]);
     return response()->json(['message' => 'Invalid credentials'], 401);
 });
 

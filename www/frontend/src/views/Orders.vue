@@ -107,11 +107,14 @@ const loadProfile = async () => {
 };
 
 const loadOrders = async () => {
-  // API call to /api/orders?symbol=selectedSymbol
-  orders.value = [
-    { id: 1, symbol: "BTC", side: "buy", price: 50000, amount: 0.01 },
-    { id: 2, symbol: "BTC", side: "sell", price: 51000, amount: 0.01 },
-  ];
+  try {
+    const response = await fetch(`/api/orders?symbol=${selectedSymbol.value}`);
+    if (response.ok) {
+      orders.value = await response.json();
+    }
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const loadUserOrders = async () => {
