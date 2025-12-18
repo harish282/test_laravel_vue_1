@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Events\OrderUpdated;
-use App\Events\OrderMatched;
-use App\Http\Controllers\Controller;
 use App\Models\Asset;
 use App\Models\Order;
 use App\Models\Trade;
-use Illuminate\Http\JsonResponse;
+use App\Events\OrderMatched;
+use App\Events\OrderUpdated;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
@@ -175,8 +176,11 @@ class OrderController extends Controller
             'amount' => $matchAmount,
         ]);
 
+        Log::info('Trade created', $trade->toArray());
+
         // Broadcast match
         broadcast(new OrderMatched($trade));
+        Log::info('OrderMatched event broadcasted');
 
         // Update balances
         $buyerId = $order->side === 'buy' ? $order->user_id : $counterOrder->user_id;

@@ -186,14 +186,21 @@ onMounted(async () => {
 
   // Listen for OrderMatched event
   if (window.Echo && userId.value) {
+    console.log("Setting up Echo listener for user", userId.value);
     window.Echo.private(`user.${userId.value}`).listen(
       ".order.matched",
       (e) => {
+        console.log("OrderMatched event received", e);
         // Update balance, assets, and orders
         loadProfile();
         loadUserOrders();
       }
     );
+  } else {
+    console.log("Echo not available or userId not set", {
+      echo: !!window.Echo,
+      userId: userId.value,
+    });
   }
 });
 </script>

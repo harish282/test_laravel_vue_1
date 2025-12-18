@@ -8,6 +8,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class OrderMatched implements ShouldBroadcast
 {
@@ -15,7 +16,9 @@ class OrderMatched implements ShouldBroadcast
 
     public function __construct(
         public Trade $trade,
-    ) {}
+    ) {
+        Log::info('OrderMatched event created', ['trade_id' => $trade->id]);
+    }
 
     public function broadcastOn(): array
     {
