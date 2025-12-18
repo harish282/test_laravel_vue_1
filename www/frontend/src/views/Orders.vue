@@ -96,7 +96,10 @@ const loadProfile = async () => {
   if (!token) return;
   try {
     const response = await fetch("/api/profile", {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
     });
     if (response.ok) {
       profile.value = await response.json();
@@ -107,8 +110,15 @@ const loadProfile = async () => {
 };
 
 const loadOrders = async () => {
+  const token = localStorage.getItem("token");
+  const headers = { Accept: "application/json" };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
   try {
-    const response = await fetch(`/api/orders?symbol=${selectedSymbol.value}`);
+    const response = await fetch(`/api/orders?symbol=${selectedSymbol.value}`, {
+      headers,
+    });
     if (response.ok) {
       orders.value = await response.json();
     }
@@ -122,7 +132,10 @@ const loadUserOrders = async () => {
   if (!token) return;
   try {
     const response = await fetch("/api/my-orders", {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
     });
     if (response.ok) {
       userOrders.value = await response.json();
@@ -138,7 +151,10 @@ const cancelOrder = async (id) => {
   try {
     const response = await fetch(`/api/orders/${id}/cancel`, {
       method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
     });
     if (response.ok) {
       loadUserOrders();

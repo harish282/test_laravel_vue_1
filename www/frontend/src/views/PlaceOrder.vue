@@ -52,15 +52,33 @@ const price = ref("");
 const amount = ref("");
 
 const placeOrder = async () => {
-  // API call to /api/orders
-  console.log({
-    symbol: symbol.value,
-    side: side.value,
-    price: price.value,
-    amount: amount.value,
-  });
-  // Reset form
-  price.value = "";
-  amount.value = "";
+  const token = localStorage.getItem("token");
+  if (!token) return;
+  try {
+    const response = await fetch("/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        symbol: symbol.value,
+        side: side.value,
+        price: parseFloat(price.value),
+        amount: parseFloat(amount.value),
+      }),
+    });
+    if (response.ok) {
+      // Reset form
+      price.value = "";
+      amount.value = "";
+      alert("Order placed successfully");
+    } else {
+      alert("Failed to place order");
+    }
+  } catch (error) {
+    console.error(error);
+  }
 };
 </script>
