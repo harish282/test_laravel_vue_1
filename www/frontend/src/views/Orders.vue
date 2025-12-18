@@ -85,6 +85,7 @@ const profile = ref({ usd_balance: 0, assets: [] });
 const selectedSymbol = ref("BTC");
 const orders = ref([]);
 const userOrders = ref([]);
+const userId = ref(null);
 
 const buyOrders = computed(() => orders.value.filter((o) => o.side === "buy"));
 const sellOrders = computed(() =>
@@ -116,6 +117,7 @@ const loadProfile = async () => {
     });
     if (response.ok) {
       profile.value = await response.json();
+      userId.value = profile.value.id;
     }
   } catch (error) {
     console.error(error);
@@ -177,9 +179,21 @@ const cancelOrder = async (id) => {
   }
 };
 
-onMounted(() => {
-  loadProfile();
+onMounted(async () => {
+  await loadProfile();
   loadOrders();
-  loadUserOrders();
+  await loadUserOrders();
+
+  // Listen for OrderMatched event
+  if (window.Echo && userId.value) {
+    window.Echo.private(`user.${userId.value}`).listen(
+      ".order.matched",
+      (e) => {
+        // Update balance, assets, and orders
+        loadProfile();
+        loadUserOrders();
+      }
+    );
+  }
 });
 </script>

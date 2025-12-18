@@ -45,11 +45,13 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const symbol = ref("BTC");
 const side = ref("buy");
 const price = ref("");
 const amount = ref("");
+const router = useRouter();
 
 const placeOrder = async () => {
   const token = localStorage.getItem("token");
