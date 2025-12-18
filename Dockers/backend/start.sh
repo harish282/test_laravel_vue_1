@@ -12,6 +12,9 @@ if [ ! -f .env ]; then
     cp .env.example .env
     # Generate key
     php artisan key:generate
+
+    # Run migrations and seed
+    php artisan migrate:fresh -seed
 fi
 
 # Start Reverb in background

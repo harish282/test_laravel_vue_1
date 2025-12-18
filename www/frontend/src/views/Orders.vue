@@ -79,7 +79,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 
 const profile = ref({ usd_balance: 0, assets: [] });
 const selectedSymbol = ref("BTC");
