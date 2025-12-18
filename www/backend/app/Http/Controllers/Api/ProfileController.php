@@ -26,6 +26,7 @@ class ProfileController extends Controller
         });
 
         return response()->json([
+            'id' => $user->id,
             'usd_balance' => $usdBalance,
             'assets' => $assets,
         ]);
