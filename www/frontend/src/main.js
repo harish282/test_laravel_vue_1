@@ -10,10 +10,12 @@ window.Pusher = Pusher;
 window.Echo = new Echo({
     broadcaster: 'reverb',
     key: 'local',
-    wsHost: 'backend',
+    wsHost: 'localhost',
     wsPort: 8081,
     forceTLS: false,
     encrypted: false,
+    enabledTransports: ['ws'],
+    authEndpoint: 'http://localhost:8000/broadcasting/auth',
     auth: {
         headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token'),
