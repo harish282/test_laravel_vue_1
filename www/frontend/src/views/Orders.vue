@@ -92,11 +92,18 @@ const sellOrders = computed(() =>
 );
 
 const loadProfile = async () => {
-  // API call to /api/profile
-  profile.value = {
-    usd_balance: 1000,
-    assets: [{ symbol: "BTC", amount: 0.5, locked_amount: 0 }],
-  };
+  const token = localStorage.getItem("token");
+  if (!token) return;
+  try {
+    const response = await fetch("/api/profile", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (response.ok) {
+      profile.value = await response.json();
+    }
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const loadOrders = async () => {
@@ -108,22 +115,34 @@ const loadOrders = async () => {
 };
 
 const loadUserOrders = async () => {
-  // API call to /api/orders (all user orders)
-  userOrders.value = [
-    {
-      id: 1,
-      symbol: "BTC",
-      side: "buy",
-      price: 50000,
-      amount: 0.01,
-      status: 1,
-    },
-  ];
+  const token = localStorage.getItem("token");
+  if (!token) return;
+  try {
+    const response = await fetch("/api/my-orders", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (response.ok) {
+      userOrders.value = await response.json();
+    }
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const cancelOrder = async (id) => {
-  // API call to /api/orders/{id}/cancel
-  console.log("Cancel order", id);
+  const token = localStorage.getItem("token");
+  if (!token) return;
+  try {
+    const response = await fetch(`/api/orders/${id}/cancel`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (response.ok) {
+      loadUserOrders();
+    }
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 onMounted(() => {

@@ -1,8 +1,18 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted } from "vue";
 import { RouterView } from "vue-router";
+import { isAuthenticated } from "./composables/useAuth";
 
-const isAuthenticated = ref(false); // Simple auth state, in real app use proper auth
+const logout = () => {
+  isAuthenticated.value = false;
+  localStorage.removeItem("token");
+};
+
+onMounted(() => {
+  if (localStorage.getItem("token")) {
+    isAuthenticated.value = true;
+  }
+});
 </script>
 
 <template>
@@ -14,10 +24,14 @@ const isAuthenticated = ref(false); // Simple auth state, in real app use proper
             <h1 class="text-xl font-bold text-gray-900">Trading App</h1>
           </div>
           <div class="flex items-center space-x-4">
-            <router-link to="/orders" class="text-gray-700 hover:text-gray-900"
+            <router-link
+              v-if="isAuthenticated"
+              to="/orders"
+              class="text-gray-700 hover:text-gray-900"
               >Orders</router-link
             >
             <router-link
+              v-if="isAuthenticated"
               to="/place-order"
               class="text-gray-700 hover:text-gray-900"
               >Place Order</router-link
@@ -44,14 +58,3 @@ const isAuthenticated = ref(false); // Simple auth state, in real app use proper
     </main>
   </div>
 </template>
-
-<script>
-export default {
-  methods: {
-    logout() {
-      // Implement logout
-      this.isAuthenticated = false;
-    },
-  },
-};
-</script>

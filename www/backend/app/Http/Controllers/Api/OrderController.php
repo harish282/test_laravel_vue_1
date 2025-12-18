@@ -38,6 +38,24 @@ class OrderController extends Controller
         return response()->json($orders);
     }
 
+    public function myOrders(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $orders = Order::where('user_id', $user->id)->get()->map(function ($order) {
+            return [
+                'id' => $order->id,
+                'symbol' => $order->symbol,
+                'side' => $order->side,
+                'price' => $order->price,
+                'amount' => $order->amount,
+                'status' => $order->status,
+            ];
+        });
+
+        return response()->json($orders);
+    }
+
     public function store(Request $request): JsonResponse
     {
         $request->validate([

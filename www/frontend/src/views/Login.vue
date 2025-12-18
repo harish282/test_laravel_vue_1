@@ -30,14 +30,29 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { isAuthenticated } from "../composables/useAuth";
 
 const email = ref("");
 const password = ref("");
 const router = useRouter();
 
 const login = async () => {
-  // Implement login with Sanctum
-  // For now, just redirect
-  router.push("/orders");
+  try {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email.value, password: password.value }),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem("token", data.token);
+      isAuthenticated.value = true;
+      router.push("/orders");
+    } else {
+      alert("Invalid credentials");
+    }
+  } catch (error) {
+    console.error(error);
+  }
 };
 </script>
